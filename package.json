@@ -1,0 +1,21 @@
+{
+  "name": "det-encrypt",
+  "version": "1.0.0",
+  "description": "Provides RFC5297 deterministic encryption using AES-SIV",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "encryption",
+    "deterministic"
+  ],
+  "author": "Stephen Owens",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^10.2.0"
+  },
+  "dependencies": {
+    "winston": "^3.10.0"
+  }
+}
