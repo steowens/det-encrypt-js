@@ -23,12 +23,18 @@ function _newStateBuffer(){
         Uint8Array.of(0,0,0,0));
 }
 
-
-function _copyStateBuffer(from){
-    let to = _newStateBuffer();
+/**
+ * Copies the given state buffer from to another buffer
+ * @param {*} from the source data buffer
+ * @param {*} to the target data buffer or nil
+ * @returns return given to buffer if provided or a new buffer if to is nil
+ */
+function _copyStateBuffer(from, to){
+    if(!to)
+        to = _newStateBuffer();
     for(let i = 0; i < 4; i++){
         for(let j = 0; j < 4; j++){
-            from[i][j] = to[i][j];
+            to[i][j] = from[i][j];
         }
     }
     return to;
@@ -264,7 +270,7 @@ function mixColumns(state) {
         state[0][c] = gf2.mul(0x02, stateBuffer[0][c]) ^ gf2.mul(0x03, stateBuffer[1][c]) ^ stateBuffer[2][c] ^ stateBuffer[3][c];
         state[1][c] = stateBuffer[0][c] ^ gf2.mul(0x02, stateBuffer[1][c]) ^ gf2.mul(0x03, stateBuffer[2][c]) ^ stateBuffer[3][c];
         state[2][c] = stateBuffer[0][c] ^ stateBuffer[1][c] ^ gf2.mul(0x02, stateBuffer[2][c]) ^ gf2.mul(0x03, stateBuffer[3][c]);
-        state[2][c] = gf2.mul(0x03, stateBuffer[0][c]) ^ stateBuffer[1][c] ^ stateBuffer[2][c] ^ gf2.mul(0x02, stateBuffer[3][c]);
+        state[3][c] = gf2.mul(0x03, stateBuffer[0][c]) ^ stateBuffer[1][c] ^ stateBuffer[2][c] ^ gf2.mul(0x02, stateBuffer[3][c]);
     }
 }
 

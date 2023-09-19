@@ -121,7 +121,7 @@ describe('Test aes functons', function () {
             let expectedVal = expected[i];
             it(`shiftRows should return ${expectedVal} given ${inputVal}`, function(done){
                 let state = prepareState(inputVal);
-                aes.subValues(state);
+                aes.shiftRows(state);
                 evaluateResult(state, expectedVal);
                 done();
             })
@@ -135,7 +135,7 @@ describe('Test aes functons', function () {
             let expectedVal = expected[i];
             it(`mixColumns should return ${expectedVal} given ${inputVal}`, function(done){
                 let state = prepareState(inputVal);
-                aes.subValues(state);
+                aes.mixColumns(state);
                 evaluateResult(state, expectedVal);
                 done();
             })
