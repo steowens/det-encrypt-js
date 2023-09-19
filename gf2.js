@@ -42,7 +42,7 @@ function gf2_rem(a, b){
 
 /**
  * Generalized binary field multiplcation with modular reduction in gf(2^8)
- * 
+ *   (older less efficient algorithm)
  *  @param {*} a first term to multiply recommended [0...0xFF]
  *  @param {*} b second term to multiply recommended [0..0xFF]
  *  @param {*} r the irreducible polynomial to use for modulus
@@ -71,8 +71,10 @@ function gen_gf2_mult_table() {
     let r = RIJNDAEL;
     for(let i = 0; i <= 0xFF; i++){
         let row = [];
-        for(let j = 0; j <= 0xFF; j++)
+        for(let j = 0; j <= 0xFF; j++) {
             row.push(gf_mul(j,i,r));
+            //row.push(gMul(j,i,0x1b));
+        }
         result.push(row);
     }
     return result;

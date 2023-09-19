@@ -207,7 +207,7 @@ function init(){
     }
 }
 /**
- * Performs the nist.fips.197.pdf Sub section 5.1.1 upon
+ * Performs the 
  * a state as defined in section section 3.4
  * @param {*} state a 4x4 Array of Uint8
  */
@@ -226,9 +226,53 @@ function subValues(state){
     }
 }
 
+/**
+ * Does a shiftRows operation per nist.fips.197.pdf Sub section 5.1.2
+ * nothing fancy here, we have a constant allocated buffer to allow the 
+ * source data to be copied out in the right order.  Each element is copied
+ * exactly twice per row.  Nothing fancy and the algorithm will operate
+ * within most CPU L1 cache and copying data there is lightning quick.
+ * @param {*} state to operate on
+ */
+const copyBuffer = new Uint8Array(4);
+function shiftRows(state){
+    for(let r = 0; r < 4; r++){
+        for(let c = 0; c < 4; c++){
+            copyBuffer[c] = state[r][(c + r)%4]; 
+        }
+        for(let c = 0; c < 4; c++){
+            state[r][c] = copyBuffer[c];
+        }
+    }
+}
+
+
+
+const stateBuffer = _newStateBuffer();
+/**
+ * per nist.fips.197.pdf Sub section 5.1.3 MixColumns() Transformation
+ * The MixColumns() transformation operates on the State column-by-column, treating each
+ * column as a four-term polynomial as described in Sec. 4.3. The columns are considered as
+ * polynomials over GF(28) and multiplied modulo x^4 + 1 with a fixed polynomial a(x), given by
+ *   a(x) = {03}x^3 + {01}x^2 + {01}x + {02} 
+ * 
+ * @param {*} state the state containing the columns
+ */
+function mixColumns(state) {
+    for(let c = 0; c < 4; c++){
+        _copyStateBuffer(state, stateBuffer);
+        state[0][c] = gf2.mul(0x02, stateBuffer[0][c]) ^ gf2.mul(0x03, stateBuffer[1][c]) ^ stateBuffer[2][c] ^ stateBuffer[3][c];
+        state[1][c] = stateBuffer[0][c] ^ gf2.mul(0x02, stateBuffer[1][c]) ^ gf2.mul(0x03, stateBuffer[2][c]) ^ stateBuffer[3][c];
+        state[2][c] = stateBuffer[0][c] ^ stateBuffer[1][c] ^ gf2.mul(0x02, stateBuffer[2][c]) ^ gf2.mul(0x03, stateBuffer[3][c]);
+        state[2][c] = gf2.mul(0x03, stateBuffer[0][c]) ^ stateBuffer[1][c] ^ stateBuffer[2][c] ^ gf2.mul(0x02, stateBuffer[3][c]);
+    }
+}
+
 module.exports = {
     init: init,
     subValues: subValues,
+    shiftRows: shiftRows,
+    mixColumns: mixColumns,
     _sboxVal: _sboxVal,
     _makeSbox: _makeSbox,
     _sboxToString: _sboxToString,

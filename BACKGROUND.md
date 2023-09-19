@@ -55,6 +55,49 @@ OUTPUT: c(x) = a(x) · b(x) represented with vector c
    12:   end if
    13: end for
 
+## Collected Notes
+
+Generalized algorithm for multiplying 2 polynomials using array to represent their coefficients in python (cause python is better).
+
+    def mp(p1,p2):
+        # max order of product is len(p1) + len(p2) - 1
+        def p3 = [0]*(len(p1) + len(p2) - 1)
+
+        # multiply the coefficients for each term in the output
+        for i in range(len(p1)):
+            for j in range(len(p2)):
+                p3[i+j] = p3[i+j] + p1[i]*p2[j]
+        return p3
+
+    print(mp([2,1], [1,1,2]))
+    print(mp([2,0,1],[1,0,0,0]))
+
+the above prints: 
+    
+    [2,3,5,2]
+    [2, 0, 1, 0, 0, 0]
+
+Workng by hand we have 
+    (2x + 1)(x^2 + x + 2) 
+        = 2x^3 + 2x^2 + 4x + x^2 + x + 2 
+        = 2x^3 + 3x^2 + 5x + 2 --- Note the coefficients 2,3,5,2
+
+    (2x^2 + 1)(x^4) 
+        = 2x^6 + x^4
+        = 2x^6 + 0x^5 + x^4 + 0x^3 + 0x^2 + 0x + 0 -- Note the coefficients 2,0,1,0,0,0
+
+So now lets examine the AES Standards definition of 4 term polynomial multiplication. 
+Under this scheme we have an array of 4 bytes such as a single column from the state box.
+The bytes can take any value from 0 - 255 (0000 0000 ... 1111 1111).
+So lets take an example array:
+
+     [0x20, 0xF3, 0A2, 0x01]
+
+
+
+
+
+
 # References
 [Hankerson et al. 2000] -  Software Implementation of Elliptic Curve Cryptography Over Binary Fields. In CHES ’00: Workshop on Cryptographic Hardware and Embedded Systems
 
